@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Keyword Research Results</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --secondary-color: #1e40af;
+            --background-light: #f8fafc;
+            --text-dark: #1e293b;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background-color: var(--background-light);
+        }
+
+        .results-container {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+
+        .keyword-table {
+            width: 100%;
+            margin-top: 1.5rem;
+            border-collapse: separate;
+            border-spacing: 0;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .keyword-table th {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 1rem;
+            text-align: left;
+        }
+
+        .keyword-table td {
+            padding: 1rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .keyword-table tr:hover {
+            background-color: #f8fafc;
+        }
+
+        .download-btn {
+            background-color: #22c55e;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+        }
+
+        .download-btn:hover {
+            background-color: #16a34a;
+            transform: translateY(-2px);
+        }
+
+        .metrics-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .metric-value {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .metric-label {
+            color: #64748b;
+            font-size: 0.875rem;
+        }
+
+        .report-section {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        .report-text {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            color: #4a5568;
+        }
+
+        .report-highlight {
+            background-color: #f7fafc;
+            border-left: 4px solid var(--primary-color);
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+
+        .history-sidebar {
+            background: white;
+            border-radius: 12px;
+            padding: 1rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .history-item {
+            padding: 0.5rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .history-link {
+            text-decoration: none;
+            color: var(--text-dark);
+            display: block;
+            padding: 0.5rem;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .history-link:hover {
+            background-color: #f1f5f9;
+            color: var(--primary-color);
+        }
+
+        .history-link.active {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .report-block {
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: #f8fafc;
+            border-radius: 8px;
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .report-block h3 {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        .report-summary {
+            height: calc(100vh - 2rem);
+            overflow: hidden;
+            padding: 1.5rem;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .report-scroll-container {
+            height: calc(100% - 4rem);
+            overflow-y: auto;
+            padding-right: 0.5rem;
+        }
+
+        .gradient-card {
+            background: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%);
+            border-left: none;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .gradient-card::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 4px;
+            background: linear-gradient(to bottom, var(--primary-color), #60a5fa);
+        }
+
+        .volume-category {
+            padding: 1rem;
+            margin: 0.5rem 0;
+            border-radius: 8px;
+            background: white;
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .category-label {
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .keyword-list {
+            list-style: none;
+            padding-left: 1rem;
+            margin-top: 0.5rem;
+        }
+
+        .keyword-list li {
+            padding: 0.25rem 0;
+            color: #4a5568;
+        }
+
+        .selection-card {
+            background: linear-gradient(145deg, #f0f9ff 0%, #e0f2fe 100%);
+            border: none;
+            padding: 1.5rem;
+        }
+
+        .strategy-list {
+            margin: 1rem 0;
+            padding-left: 1.5rem;
+        }
+
+        .strategy-list li {
+            margin: 0.5rem 0;
+            color: #475569;
+        }
+
+        .custom-select {
+            background-color: white;
+            border: 1px solid #e2e8f0;
+            padding: 0.75rem;
+            font-size: 0.95rem;
+        }
+
+        /* Custom scrollbar */
+        .report-scroll-container::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .report-scroll-container::-webkit-scrollbar-track {
+            background: #f1f5f9;
+            border-radius: 4px;
+        }
+
+        .report-scroll-container::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+
+        .report-scroll-container::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+
+        .metrics-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.5rem;
+        }
+
+        .metric-mini-card {
+            background: #f8fafc;
+            padding: 0.75rem;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .metric-mini-card .metric-value {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .metric-mini-card .metric-label {
+            font-size: 0.75rem;
+            color: #64748b;
+        }
+
+        .compact-report {
+            font-size: 0.85rem;
+        }
+
+        .report-card {
+            background: #f8fafc;
+            padding: 1.25rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .report-card h4 {
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .report-card p {
+            margin-bottom: 0;
+            line-height: 1.4;
+        }
+
+        .report-content {
+            white-space: pre-line;
+            line-height: 1.6;
+        }
+
+        .opportunities-table {
+            margin-top: 1rem;
+            font-size: 0.85rem;
+        }
+
+        .table-sm td, .table-sm th {
+            padding: 0.5rem;
+        }
+
+        .lead {
+            font-size: 1rem;
+            color: #4a5568;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+    <!-- Simple navigation -->
+    <div class="container mt-3">
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <div class="container-fluid">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a href="/" class="nav-link text-primary fw-bold">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/keyword-research" class="nav-link text-primary fw-bold">Keyword Research</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </div>
+
+    <div class="container-fluid mt-4">
+        <div class="row">
+            <!-- Search History Sidebar -->
+            <div class="col-md-3">
+                <div class="history-sidebar bg-white p-3 rounded shadow-sm">
+                    <h3 class="h5">Búsquedas Anteriores</h3>
+                    <div class="search-history-list">
+                        {% for search in search_history %}
+                        <div class="history-item">
+                            <a href="{{ url_for('keyword_research.view_history', search_id=search.id) }}" 
+                               class="history-link {% if search.keyword == keyword %}active{% endif %}">
+                                <strong>{{ search.keyword }}</strong>
+                                <small class="text-muted d-block">{{ search.timestamp }}</small>
+                            </a>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Content - Keywords Table -->
+            <div class="col-md-6">
+                <h1 class="h3 mb-4">Resultados del Análisis</h1>
+                <div class="results-container bg-white p-4 rounded shadow-sm">
+                    <h2 class="h4">Keywords Encontradas</h2>
+                    <table class="table table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th>Keyword</th>
+                                <th>Volumen</th>
+                                <th>Dificultad</th>
+                                <th>CPC</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for keyword in keywords %}
+                            <tr>
+                                <td>{{ keyword.keyword }}</td>
+                                <td>{{ keyword.volume }}</td>
+                                <td>{{ keyword.difficulty }}</td>
+                                <td>${{ keyword.cpc }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    
+                    <div class="text-end">
+                        <button class="btn btn-primary">
+                            <i class="fas fa-download"></i> Descargar Informe
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Sidebar - Detailed Report -->
+            <div class="col-md-3">
+                <div class="report-summary bg-white p-4 rounded shadow-sticky">
+                    <h3 class="h4 mb-4">Análisis SEO Detallado</h3>
+                    
+                    <div class="report-scroll-container">
+                        <!-- Volume Analysis -->
+                        <div class="report-card gradient-card">
+                            <h4 class="h5">Análisis de Volumen</h4>
+                    <div class="report-content">
+                                {{ report.volume_explanation|safe }}
+                                <div class="volume-distribution">
+                                    <h5 class="h6 mt-3">Distribución por Volumen:</h5>
+                                    <div class="volume-category high-volume">
+                                        <span class="category-label">Alto Volumen (>1000):</span>
+                                        <ul class="keyword-list">
+                                            {% for kw in report.volume_categories.high %}
+                                            <li>{{ kw.keyword }} ({{ kw.volume }})</li>
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                    <div class="volume-category medium-volume">
+                                        <span class="category-label">Volumen Medio (500-1000):</span>
+                                        <ul class="keyword-list">
+                                            {% for kw in report.volume_categories.medium %}
+                                            <li>{{ kw.keyword }} ({{ kw.volume }})</li>
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                    <div class="volume-category low-volume">
+                                        <span class="category-label">Bajo Volumen (<500):</span>
+                                        <ul class="keyword-list">
+                                            {% for kw in report.volume_categories.low %}
+                                            <li>{{ kw.keyword }} ({{ kw.volume }})</li>
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Difficulty Analysis with specific examples -->
+                        <div class="report-card">
+                            <h4 class="h5">Análisis de Dificultad</h4>
+                            <div class="report-content">
+                                {{ report.difficulty_analysis|safe }}
+                                <div class="difficulty-examples mt-3">
+                                    <h5 class="h6">Análisis por Nivel de Dificultad:</h5>
+                                    {% for kw in report.difficulty_examples %}
+                                    <div class="difficulty-detail">
+                                        <strong>{{ kw.keyword }}</strong>
+                                        <p>{{ kw.analysis }}</p>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Enhanced Best Opportunities -->
+                        <div class="report-card">
+                            <h4 class="h5">Mejores Oportunidades</h4>
+                            <div class="opportunities-table">
+                                <table class="table table-sm">
+                                    <thead>
+                                        <tr>
+                                            <th>Keyword</th>
+                                            <th>Volumen</th>
+                                            <th>Dificultad</th>
+                                            <th>Potencial</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for kw in report.best_opportunities.keywords %}
+                                        <tr>
+                                            <td>{{ kw.keyword }}</td>
+                                            <td>
+                                                {{ kw.volume }}
+                                                <small class="text-muted d-block">{{ kw.volume_analysis }}</small>
+                                            </td>
+                                            <td>
+                                                {{ kw.difficulty }}
+                                                <small class="text-muted d-block">{{ kw.difficulty_analysis }}</small>
+                                            </td>
+                                            <td>{{ kw.potential_score }}/10</td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Enhanced Technical Details -->
+                        <div class="report-card">
+                            <h4 class="h5">Métricas Detalladas</h4>
+                            <div class="metrics-detail">
+                                {% for category, metrics in report.detailed_metrics.items() %}
+                                <div class="metric-category">
+                                    <h5 class="h6">{{ category }}</h5>
+                                    <table class="table table-sm">
+                                        {% for metric in metrics %}
+                                        <tr>
+                                            <td>{{ metric.name }}</td>
+                                            <td>{{ metric.value }}</td>
+                                            <td><small class="text-muted">{{ metric.description }}</small></td>
+                                        </tr>
+                                        {% endfor %}
+                                    </table>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+
+                        <!-- Enhanced Keyword Selection -->
+                        <div class="report-card selection-card">
+                            <h4 class="h5">Selección de Keyword para Estrategia</h4>
+                            <p class="selection-intro">
+                                Selecciona la keyword que utilizarás para:
+                                <ul class="strategy-list">
+                                    <li>Optimización de contenido</li>
+                                    <li>Creación de nuevas páginas</li>
+                                    <li>Estrategia de linkbuilding</li>
+                                    <li>Monitorización de rankings</li>
+                                </ul>
+                            </p>
+                            <form action="{{ url_for('keyword_research.save_selected_keyword') }}" method="post">
+                                <div class="form-group">
+                                    <select class="form-select custom-select" name="selected_keyword" id="selected_keyword">
+                                        {% for kw in keywords %}
+                                        <option value="{{ kw.keyword }}" 
+                                                data-volume="{{ kw.volume }}" 
+                                                data-difficulty="{{ kw.difficulty }}">
+                                            {{ kw.keyword }} 
+                                            (Vol: {{ kw.volume }}, Dif: {{ kw.difficulty }}/100)
+                                        </option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <button type="submit" class="btn btn-primary btn-block mt-3">
+                                    Usar esta Keyword para Posicionamiento
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
